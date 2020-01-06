@@ -1,0 +1,65 @@
+package ru.leovalter.votingballot.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "votes_unique_date_user_idx")})
+public class Vote extends AbstractBaseEntity {
+
+    @Column(name = "user_id", nullable = false)
+    private Integer user_id;
+
+    @Column(name = "restaurant_id", nullable = false)
+    private Integer restaurant_id;
+
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
+
+    public Vote() {
+    }
+
+    public Vote(Integer id, Integer user_id, Integer restaurant_id, LocalDate date) {
+        super(id);
+        this.user_id = user_id;
+        this.restaurant_id = restaurant_id;
+        this.date = date;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
+    }
+
+    public Integer getRestaurant_id() {
+        return restaurant_id;
+    }
+
+    public void setRestaurant_id(Integer restaurant_id) {
+        this.restaurant_id = restaurant_id;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date_time) {
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Vote{" +
+                "id=" + id +
+                ", user_id=" + user_id +
+                ", restaurant_id=" + restaurant_id +
+                ", date=" + date +
+                '}';
+    }
+}
