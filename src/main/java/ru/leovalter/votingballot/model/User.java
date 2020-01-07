@@ -36,14 +36,6 @@ public class User extends AbstractBaseEntity {
     public User() {
     }
 
-    public User(String name, String email, String password, LocalDateTime registered, Set<Role> roles) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.registered = registered;
-        this.roles = roles;
-    }
-
     public User(Integer id, String name, String email, String password, LocalDateTime registered, Set<Role> roles) {
         super(id);
         this.name = name;
