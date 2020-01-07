@@ -3,7 +3,7 @@ package ru.leovalter.votingballot.model;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+//@Entity
 @Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "restaurants_unique_name_idx")})
 public class Restaurant extends AbstractBaseEntity {
 
