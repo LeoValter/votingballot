@@ -1,9 +1,10 @@
-package ru.leovalter.votingballot.repository;
+package ru.leovalter.votingballot.repository.restaurant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import ru.leovalter.votingballot.model.Restaurant;
+import ru.leovalter.votingballot.repository.RestaurantRepository;
 
 import java.util.List;
 

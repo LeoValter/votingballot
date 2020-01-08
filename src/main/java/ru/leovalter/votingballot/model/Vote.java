@@ -1,55 +1,75 @@
 package ru.leovalter.votingballot.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "votes_unique_date_user_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "votes_unique_date_idx")})
 public class Vote extends AbstractBaseEntity {
 
-    @Column(name = "user_id", nullable = false)
-    private Integer user_id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
-    @Column(name = "restaurant_id", nullable = false)
-    private Integer restaurant_id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Restaurant restaurant;
 
-    @Column(name = "date", nullable = false)
+    @NotNull
+    @Column(name = "date", columnDefinition = "timestamp default current_date", nullable = false)
     private LocalDate date;
 
     public Vote() {
     }
 
-    public Vote(Integer id, Integer user_id, Integer restaurant_id, LocalDate date) {
+    public Vote(Vote vote) {
+        this(vote.getId(), vote.getDate(), vote.getUser(), vote.getRestaurant());
+    }
+
+    public Vote(Integer id, LocalDate date, User user, Restaurant restaurant) {
         super(id);
-        this.user_id = user_id;
-        this.restaurant_id = restaurant_id;
+        this.date = date;
+        this.user = user;
+        this.restaurant = restaurant;
+    }
+
+    public Vote(LocalDate date, User user, Restaurant restaurant) {
+        this.date = date;
+        this.user = user;
+        this.restaurant = restaurant;
+    }
+
+    public Vote(LocalDate date) {
         this.date = date;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Integer getRestaurant_id() {
-        return restaurant_id;
+    public Restaurant getRestaurant() {
+        return restaurant;
     }
 
-    public void setRestaurant_id(Integer restaurant_id) {
-        this.restaurant_id = restaurant_id;
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date_time) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -57,8 +77,6 @@ public class Vote extends AbstractBaseEntity {
     public String toString() {
         return "Vote{" +
                 "id=" + id +
-                ", user_id=" + user_id +
-                ", restaurant_id=" + restaurant_id +
                 ", date=" + date +
                 '}';
     }

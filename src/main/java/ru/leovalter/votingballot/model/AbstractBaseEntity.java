@@ -1,19 +1,19 @@
 package ru.leovalter.votingballot.model;
 
+import org.hibernate.Hibernate;
 import ru.leovalter.votingballot.HasId;
 
 import javax.persistence.*;
 
 @MappedSuperclass
-//@Access(AccessType.FIELD)
+@Access(AccessType.FIELD)
 public abstract class AbstractBaseEntity implements HasId {
 
-    public static final int START_SEQ = 100000;
+    public static final int START_SEQ = 100;
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
-    @Column(name = "id", nullable = false)
     protected Integer id;
 
     protected AbstractBaseEntity() {
@@ -23,12 +23,35 @@ public abstract class AbstractBaseEntity implements HasId {
         this.id = id;
     }
 
+
+    public Integer getId() {
+        return id;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public Integer getId() {
-        return id;
+    @Override
+    public boolean isNew() {
+        return this.id == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !getClass().equals(Hibernate.getClass(o))) {
+            return false;
+        }
+        AbstractBaseEntity that = (AbstractBaseEntity) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id;
     }
 
     @Override

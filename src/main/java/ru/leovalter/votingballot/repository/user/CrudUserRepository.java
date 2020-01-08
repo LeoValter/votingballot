@@ -1,6 +1,5 @@
-package ru.leovalter.votingballot.repository;
+package ru.leovalter.votingballot.repository.user;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +9,11 @@ import ru.leovalter.votingballot.model.User;
 
 @Transactional(readOnly = true)
 public interface CrudUserRepository extends JpaRepository<User, Integer> {
+
+    @Override
+    @Transactional
+    User save(User user);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM User u WHERE u.id=:id")

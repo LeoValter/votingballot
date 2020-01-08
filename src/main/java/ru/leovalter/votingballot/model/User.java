@@ -1,56 +1,64 @@
 package ru.leovalter.votingballot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
-public class User extends AbstractBaseEntity {
+public class User extends AbstractNamedEntity {
 
-    @Column(name = "name", nullable = false)
-    @NotBlank
-    @Size(min = 2, max = 100)
-    private String name;
-
-    @Column(name = "email", nullable = false, unique = true)
     @Email
+    @NotBlank
     @Size(max = 100)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotBlank
     @Column(name = "password", nullable = false)
+    @Size(min = 5, max = 70)
     private String password;
 
-    @Column(name = "registered", nullable = false)
-    private LocalDateTime registered = LocalDateTime.now();
+    @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
+    private boolean enabled = true;
+
+    @Column(name = "registered", columnDefinition = "timestamp default now()")
+    private Date registered = new Date();
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
+    @BatchSize(size = 200)
     private Set<Role> roles;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonIgnore
+    private List<Vote> votes;
 
     public User() {
     }
 
-    public User(Integer id, String name, String email, String password, LocalDateTime registered, Set<Role> roles) {
-        super(id);
-        this.name = name;
+    public User(User u) {
+        this(u.getId(), u.name, u.email, u.password, u.isEnabled(), u.getRoles());
+    }
+
+    public User(Integer id, String name, String email, String password, Role role, Role... roles) {
+        this(id, name, email, password, true, EnumSet.of(role, roles));
+    }
+
+    public User(Integer id, String name, String email, String password, boolean enabled, Collection<Role> roles) {
+        super(id, name);
         this.email = email;
         this.password = password;
-        this.registered = registered;
-        this.roles = roles;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.enabled = enabled;
+        setRoles(roles);
     }
 
     public String getEmail() {
@@ -69,11 +77,19 @@ public class User extends AbstractBaseEntity {
         this.password = password;
     }
 
-    public LocalDateTime getRegistered() {
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Date getRegistered() {
         return registered;
     }
 
-    public void setRegistered(LocalDateTime registered) {
+    public void setRegistered(Date registered) {
         this.registered = registered;
     }
 
@@ -81,19 +97,27 @@ public class User extends AbstractBaseEntity {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email=" + email +
-                ", name=" + name +
+        return "User{" + "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
                 ", registered=" + registered +
                 ", roles=" + roles +
-                '}';
+                "}";
     }
-
 }

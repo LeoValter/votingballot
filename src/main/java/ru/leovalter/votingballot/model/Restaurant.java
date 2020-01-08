@@ -1,31 +1,52 @@
 package ru.leovalter.votingballot.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "restaurants_unique_name_idx")})
-public class Restaurant extends AbstractBaseEntity {
+@Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "restaurants_unique_name_idx")})
+public class Restaurant extends AbstractNamedEntity {
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+    @OrderBy("date DESC")
+    @JsonIgnore
+    private List<Dish> dishes;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "restaurant")
+    @OrderBy("date DESC")
+    private List<Vote> votes;
 
     public Restaurant() {
     }
 
+    public Restaurant(Restaurant r) {
+        this(r.getId(), r.getName());
+    }
+
+    public Restaurant(String name) {
+        super(name);
+    }
+
     public Restaurant(Integer id, String name) {
-        super(id);
-        this.name = name;
+        super(id, name);
     }
 
-    public String getName() {
-        return name;
+    protected List<Dish> getDishes() {
+        return dishes;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    protected void setDishes(List<Dish> dishes) {
+        this.dishes = dishes;
+    }
+
+    protected List<Vote> getVotes() {
+        return votes;
+    }
+
+    protected void setVotes(List<Vote> votes) {
+        this.votes = votes;
     }
 
     @Override
@@ -35,5 +56,4 @@ public class Restaurant extends AbstractBaseEntity {
                 ", name='" + name + '\'' +
                 '}';
     }
-
 }

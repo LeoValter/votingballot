@@ -1,78 +1,90 @@
 package ru.leovalter.votingballot.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.Range;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "dishes")
-public class Dish extends AbstractBaseEntity {
+@Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"restaurant_id", "date", "name"}, name = "dishes_unique_name_idx")})
+public class Dish extends AbstractNamedEntity {
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
+    @NotNull
+    @Range(min = 10, max = 10000)
     @Column(name = "price", nullable = false)
-    private int price;
+    private Integer price;
 
-    @Column(name = "restaurant_id", nullable = false)
-    private int restaurant_id;
+    @NotNull
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
 
-    @Column(name = "date_time", nullable = false)
-    private LocalDateTime dateTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
+    private Restaurant restaurant;
 
     public Dish() {
     }
 
-    public Dish(Integer id, String name, int price, int restaurant_id, LocalDateTime dateTime) {
-        super(id);
-        this.name = name;
+    public Dish(Dish dish) {
+        this(dish.getId(), dish.getName(), dish.getPrice(), dish.getRestaurant(), dish.getDate());
+    }
+
+    public Dish(int price, LocalDate date, Restaurant restaurant) {
         this.price = price;
-        this.restaurant_id = restaurant_id;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.restaurant = restaurant;
     }
 
-    public String getName() {
-        return name;
+    public Dish(String name, int price, LocalDate date) {
+        super(name);
+        this.price = price;
+        this.date = date;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Dish(Integer id, String name, int price, Restaurant restaurant, LocalDate date) {
+        super(id, name);
+        this.price = price;
+        this.date = date;
+        this.restaurant = restaurant;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public int getRestaurant_id() {
-        return restaurant_id;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setRestaurant_id(int restaurant_id) {
-        this.restaurant_id = restaurant_id;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public Restaurant getRestaurant() {
+        return restaurant;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 
     @Override
     public String toString() {
         return "Dish{" +
                 "id=" + id +
-                ", dateTime=" + dateTime +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", restaurant=" + restaurant_id +
+                ", date=" + date +
                 '}';
     }
-
 }

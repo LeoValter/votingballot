@@ -1,9 +1,10 @@
-package ru.leovalter.votingballot.repository;
+package ru.leovalter.votingballot.repository.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import ru.leovalter.votingballot.model.User;
+import ru.leovalter.votingballot.repository.UserRepository;
 
 import java.util.List;
 

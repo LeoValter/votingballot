@@ -1,8 +1,8 @@
-DELETE FROM users;
 DELETE FROM user_roles;
-DELETE FROM votes;
+DELETE FROM users;
 DELETE FROM restaurants;
 DELETE FROM dishes;
+DELETE FROM votes;
 
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
@@ -23,6 +23,10 @@ INSERT INTO dishes (name, price, restaurant_id, date) VALUES
 ('Шашлык', 400, 100002, now()),
 ('Борщ', 300, 100003, now()),
 ('Плов', 300, 100004, now());
+
+INSERT INTO votes (date, user_id, restaurant_id) VALUES
+(now(), 100000, 100002),
+(now(), 100001, 100003);
 
 
 

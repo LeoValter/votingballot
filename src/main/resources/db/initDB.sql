@@ -1,8 +1,8 @@
-DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS votes;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS dishes;
 DROP TABLE IF EXISTS restaurants;
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS users;
 
 DROP SEQUENCE IF EXISTS global_seq;
 
@@ -14,14 +14,16 @@ CREATE TABLE users
     name       VARCHAR                           NOT NULL,
     email      VARCHAR                           NOT NULL,
     password   VARCHAR                           NOT NULL,
+    enabled    BOOLEAN DEFAULT TRUE              NOT NULL,
     registered TIMESTAMP           DEFAULT now() NOT NULL
 );
 CREATE UNIQUE INDEX users_unique_email_idx ON users (email);
 
 CREATE TABLE user_roles
 (
-    user_id INTEGER NOT NULL,
-    role    VARCHAR,
+    user_id     INTEGER     NOT NULL,
+    role        VARCHAR     NOT NULL,
+
     CONSTRAINT user_roles_idx UNIQUE (user_id, role),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -29,31 +31,30 @@ CREATE TABLE user_roles
 CREATE TABLE restaurants
 (
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    name        TEXT      NOT NULL
+    name        TEXT            NOT NULL
 );
 CREATE UNIQUE INDEX restaurants_unique_name_idx ON restaurants (name);
 
 CREATE TABLE dishes
 (
     id            INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    name          TEXT      NOT NULL,
-    price         INT       NOT NULL,
-    restaurant_id INTEGER   NOT NULL,
-    date          DATE NOT NULL,
+    restaurant_id INTEGER               NOT NULL,
+    date          DATE DEFAULT now()    NOT NULL,
+    name          VARCHAR               NOT NULL,
+    price         INTEGER               NOT NULL,
 
     FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );
-CREATE INDEX dishes_date_idx ON dishes (date);
-CREATE INDEX dishes_date_restaurant_idx ON dishes (date, restaurant_id);
+CREATE UNIQUE INDEX dishes_unique_name_idx ON dishes (restaurant_id, name, date);
 
 CREATE TABLE votes
 (
-    id            INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    user_id       INTEGER   NOT NULL,
-    restaurant_id INTEGER   NOT NULL,
-    date          DATE NOT NULL,
+    id              INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+    date            DATE DEFAULT now()  NOT NULL,
+    user_id         INTEGER             NOT NULL,
+    restaurant_id   INTEGER             NOT NULL,
 
-    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX votes_unique_date_user_idx ON votes (user_id, date);
+CREATE UNIQUE INDEX votes_unique_date_idx ON votes (user_id, date);
