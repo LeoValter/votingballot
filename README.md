@@ -27,3 +27,53 @@ P.S.: Make sure everything works with latest version that is on github :)
 P.P.S.: Asume that your API will be used by a frontend developer to build frontend on top of that.
 
 ---
+
+<pre>
+SERVER_PATH for app http://localhost:8080/votingballot
+</pre>
+
+## Admin flow 
+
+#### get All Users
+`curl -s http://localhost:8080/votingballot/admin/users --user admin@gmail.com:admin`
+
+#####Response example:
+<pre>
+[ { "id":100000,
+    "name":"Admin",
+    "email":"admin@gmail.com",
+    "password":"{noop}admin",
+    "enabled":true,
+    "registered":"2020-01-16T18:01:38.738+0000",
+    "roles":["ROLE_ADMIN","ROLE_USER"]
+  },
+    
+  { "id":100001,
+    "name":"User",
+    "email":"user@gmail.com",
+    "password":"{noop}password",
+    "enabled":true,
+    "registered":"2020-01-16T18:01:38.738+0000",
+    "roles":["ROLE_USER"]
+  }
+]
+</pre>
+
+#### get Users 100001
+`curl -s http://localhost:8080/votingballot/admin/users/100001 --user admin@gmail.com:admin`
+
+#####Response example:
+<pre>
+  { "id":100001,
+    "name":"User",
+    "email":"user@gmail.com",
+    "password":"{noop}password",
+    "enabled":true,"registered":"2020-01-16T18:01:38.738+0000",
+    "roles":["ROLE_USER"]
+  }
+</pre>
+
+
+#...Full documentation will be published on 17/01/2020...
+
+### Thank you for understanding!
