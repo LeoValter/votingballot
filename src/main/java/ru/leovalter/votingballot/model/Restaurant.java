@@ -33,19 +33,19 @@ public class Restaurant extends AbstractNamedEntity {
         super(id, name);
     }
 
-    protected List<Dish> getDishes() {
+    public List<Dish> getDishes() {
         return dishes;
     }
 
-    protected void setDishes(List<Dish> dishes) {
+    public void setDishes(List<Dish> dishes) {
         this.dishes = dishes;
     }
 
-    protected List<Vote> getVotes() {
+    public List<Vote> getVotes() {
         return votes;
     }
 
-    protected void setVotes(List<Vote> votes) {
+    public void setVotes(List<Vote> votes) {
         this.votes = votes;
     }
 
