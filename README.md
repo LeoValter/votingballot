@@ -31,7 +31,7 @@ P.P.S.: Asume that your API will be used by a frontend developer to build fronte
 <pre>
 SERVER_PATH for app http://localhost:8080/votingballot
 </pre>
-
+---
 ##Profiles
 
 ### Registration
@@ -52,7 +52,7 @@ SERVER_PATH for app http://localhost:8080/votingballot
 
 ### Admins
 
-#### get All Users
+#### Get All Users
 `curl -s http://localhost:8080/votingballot/admin/users --user admin@gmail.com:admin`
 
 #####Response example:
@@ -77,7 +77,7 @@ SERVER_PATH for app http://localhost:8080/votingballot
 ]
 </pre>
 
-#### get User 100001
+#### Get User 100001
 `curl -s http://localhost:8080/votingballot/admin/users/100001 --user admin@gmail.com:admin`
 
 #####Response example:
@@ -148,10 +148,163 @@ SERVER_PATH for app http://localhost:8080/votingballot
 `curl -s -X PUT -d '{"id":100001,"name":"NewName","email":"user@gmail.com","password":"password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/users --user user@gmail.com:password`
 
 
-#### delete Current User
+#### Delete Current User
 
 `curl -s -X DELETE http://localhost:8080/votingballot/users --user user@gmail.com:password`
 
-#...Full documentation will be published on 17/01/2020...
 
-### Thank you for understanding!
+##Restaurants
+
+
+### Get Restaurants with Today Menu
+
+`curl -s http://localhost:8080/votingballot/restaurants/today --user user@gmail.com:password`
+
+#####Response example:
+<pre>
+[  {    "id":100002,
+    "name":"Шарманка",
+    "dishes":[  {   "id":100007,
+                    "name":"Шашлык из Каре Ягненка",
+                    "price":450,
+                    "date":"2020-01-17"
+                 }
+              ]
+    },
+    
+    {   "id":100003,
+        "name":"Тарас Бульба",
+        "dishes":[  {   "id":100011,
+                        "name":"Вареники Староукраинские",
+                        "price":310,
+                        "date":"2020-01-17"
+                     }
+                  ]
+    },
+    
+    {   "id":100006,
+        "name":"Ёлки Палки",
+        "dishes":[  {   "id":100017,
+                        "name":"Суп из белых грибов",
+                        "price":175,
+                        "date":"2020-01-17"
+                     }
+                 ]
+    }
+]
+</pre>
+
+### Get All Restaurants (ADMIN ONLY)
+
+`curl -s http://localhost:8080/votingballot/admin/restaurants --user admin@gmail.com:admin`
+
+### Get Restaurant 100002
+
+`curl -s http://localhost:8080/votingballot/restaurants/100002 --user user@gmail.com:password`
+
+### Create Restaurant (ADMIN ONLY)
+
+`curl -s -X POST -d '{"name":"New Restaurant"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/admin/restaurants --user admin@gmail.com:admin`
+
+### Update Restaurant 100022 (ADMIN ONLY)
+
+`curl -s -X PUT -d '{"name":"Update Restaurant"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/admin/restaurants/100022 --user admin@gmail.com:admin`
+
+### Delete Restaurant (ADMIN ONLY)
+
+`curl -s -X DELETE '{"name":"Update Restaurant"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/admin/restaurants/100022 --user admin@gmail.com:admin`
+
+
+##Dishes
+
+
+### Get All Dishes By Restaurant (ADMIN ONLY)
+
+`curl -s http://localhost:8080/votingballot/admin/restaurants/100002/dishes --user admin@gmail.com:admin`
+
+### Create Dish (ADMIN ONLY)
+
+`curl -s -X POST -d '{"name":"New dish","price":199,"date":"2020-01-17"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/admin/restaurants/100002/dishes --user admin@gmail.com:admin`
+
+#####Response example:
+<pre>
+  { "id":100023,
+    "name":"New dish",
+    "price":199,
+    "date":"2020-01-17"}
+</pre>
+
+### Update Dish (ADMIN ONLY)
+
+`curl -s -X PUT -d '{"name":"Update dish","price":199,"date":"2020-01-17"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/admin/restaurants/100002/dishes/100023 --user admin@gmail.com:admin`
+
+### Delete Dish (ADMIN ONLY)
+
+`curl -s -X DELETE http://localhost:8080/votingballot/admin/restaurants/100002/dishes/100023 --user admin@gmail.com:admin`
+
+
+##Votes
+
+
+### Get All Votes (ADMIN ONLY)
+
+`curl -s http://localhost:8080/votingballot/admin/votes --user admin@gmail.com:admin`
+
+#####Response example:
+<pre>
+[  {    "id":100019,
+        "date":"2020-01-15",
+        "userId":100000,
+        "userName":"Admin",
+        "restaurantId":100002,
+        "restaurantName":"Шарманка"
+    },
+    
+    {   "id":100020,
+        "date":"2020-01-16",
+        "userId":100000,
+        "userName":"Admin",
+        "restaurantId":100005,
+        "restaurantName":"8 SECONDS PUB"
+    },
+    
+    {   "id":100021,
+        "date":"2020-01-16",
+        "userId":100001,
+        "userName":"User",
+        "restaurantId":100004,
+        "restaurantName":"Караван"
+    }
+]
+</pre>
+
+### Get All Votes Today (ADMIN ONLY)
+
+`curl -s http://localhost:8080/votingballot/admin/votes/today --user admin@gmail.com:admin`
+
+### Get Vote (ADMIN ONLY)
+
+`curl -s http://localhost:8080/votingballot/admin/votes/100019 --user admin@gmail.com:admin`
+
+### Get Current Profile Today Vote
+
+`curl -s http://localhost:8080/votingballot/votes --user user@gmail.com:password`
+
+#####Response example:
+<pre>
+  { "id":100021,
+    "date":"2020-01-17",
+    "userId":100001,
+    "userName":"User",
+    "restaurantId":100004,
+    "restaurantName":"Караван"
+  }
+</pre>
+
+### Vote for Restaurant
+
+`curl -s -X POST -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/votes/100005 --user user@gmail.com:password`
+
+### Delete Vote (ADMIN ONLY)
+
+`curl -s -X DELETE http://localhost:8080/votingballot/admin/votes/100019 --user admin@gmail.com:admin`
