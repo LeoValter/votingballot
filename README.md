@@ -32,7 +32,25 @@ P.P.S.: Asume that your API will be used by a frontend developer to build fronte
 SERVER_PATH for app http://localhost:8080/votingballot
 </pre>
 
-## Admin flow 
+##Profiles
+
+### Registration
+
+`curl -s -X POST -d '{"name":"UserName","email":"username@gmail.com","password":"password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/users/register`
+
+#####Response example:
+<pre>
+  { "id":100022,
+    "name":"UserName",
+    "email":"username@gmail.com",
+    "password":"{bcrypt}$2a$10$nPBfsT9y9S1/VkcUqfeVm.n963.SdCg7pp7FpNpI13eWCdWn2Rj0q",
+    "enabled":true,"registered":"2020-01-17T11:00:55.238+0000",
+    "roles":["ROLE_USER"]
+  }
+</pre>
+
+
+### Admins
 
 #### get All Users
 `curl -s http://localhost:8080/votingballot/admin/users --user admin@gmail.com:admin`
@@ -59,7 +77,7 @@ SERVER_PATH for app http://localhost:8080/votingballot
 ]
 </pre>
 
-#### get Users 100001
+#### get User 100001
 `curl -s http://localhost:8080/votingballot/admin/users/100001 --user admin@gmail.com:admin`
 
 #####Response example:
@@ -73,6 +91,66 @@ SERVER_PATH for app http://localhost:8080/votingballot
   }
 </pre>
 
+#### Create Users
+
+`curl -s -X POST -d '{"name":"SomeUsers","email":"someuser@gmail.com","password":"somepassword","roles":["ROLE_USER"]}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/admin/users --user admin@gmail.com:admin`
+
+#####Response example:
+<pre>
+  { "id":100022,
+    "name":"SomeUsers",
+    "email":"someuser@gmail.com",
+    "password":"{bcrypt}$2a$10$2wBBA02jxYFqM86n18AN9eH1uRd8jP8PXtT5IK2NfHNURbweFT536",
+    "enabled":true,
+    "registered":"2020-01-17T09:29:17.307+0000",
+    "roles":["ROLE_USER"]
+  }
+</pre>
+
+#### Update User 
+
+`curl -s -X PUT -d '{"id":100022, "name":"SomeUsers Update Name","email":"someuser@gmail.com","password":"newsomepassword"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/admin/users --user admin@gmail.com:admin`
+
+#####Response example:
+<pre>
+  { "id":100022,
+    "name":"SomeUsers Update Name",
+    "email":"someuser@gmail.com",
+    "password":"{bcrypt}$2a$10$4ldMjpj80Liz/UgoyjPcfOMY4rZ3eP9dUTYdr6zvY4V9TnFqhTVwS",
+    "enabled":true,
+    "registered":"2020-01-17T11:18:36.456+0000",
+    "roles":["ROLE_USER"]
+  }
+</pre>
+
+#### Delete User 100022
+
+`curl -s -X DELETE  http://localhost:8080/votingballot/admin/users/100022 --user admin@gmail.com:admin`
+
+
+### Users
+
+#### Get Current User
+
+`curl -s http://localhost:8080/votingballot/users --user user@gmail.com:password`
+
+#####Response example:
+<pre>
+  { "id":100001,
+    "name":"User",
+    "email":"user@gmail.com",
+    "password":"{noop}password"
+  }
+</pre>
+
+#### Update Current User
+
+`curl -s -X PUT -d '{"id":100001,"name":"NewName","email":"user@gmail.com","password":"password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/votingballot/users --user user@gmail.com:password`
+
+
+#### delete Current User
+
+`curl -s -X DELETE http://localhost:8080/votingballot/users --user user@gmail.com:password`
 
 #...Full documentation will be published on 17/01/2020...
 

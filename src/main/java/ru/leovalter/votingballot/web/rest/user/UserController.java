@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.leovalter.votingballot.AuthorizedUser;
+import ru.leovalter.votingballot.model.Role;
 import ru.leovalter.votingballot.model.User;
 import ru.leovalter.votingballot.service.UserService;
 import ru.leovalter.votingballot.to.UserTo;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.EnumSet;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
@@ -60,6 +62,7 @@ public class UserController {
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         log.info("register new user");
         User created = userService.create(user);
+        created.setRoles(EnumSet.of(Role.ROLE_USER));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
